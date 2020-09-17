@@ -1,7 +1,11 @@
-(A) MOV registrador,constante
-(B) MOV end.memória,constante
-(C) MOV registrador,end.memória
-(D) MOV end.memória,registrador
-(E) ADD registrador,registrador
-(F) ADD registrador,constante
-(G) HLT
+(A) MOV memoryAddres,const
+(B) MOV memoryAddres,register
+(C) ADD register,register
+(D) ADD register,const
+(E) improve code semantic
+(F) organize main.c
+(G) add comments where needed
+
+x2020-09-17 MOV register,const
+x2020-09-17 MOV register,memoryAddres
+x2020-09-16 HLT
