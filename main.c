@@ -5,7 +5,7 @@
 #include <string.h>
 #include <strings.h>
 
-//TODO: funcao mov
+//* funcao assembly MOV
 void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int *D) {
     int i;
     char *addr;
@@ -35,7 +35,7 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
         }
     }
     //* faz o MOV de uma constante para um registrador
-    else {
+    else if ((destiny[0] == 'A') || (destiny[0] == 'B') || (destiny[0] == 'C') || (destiny[0] == 'D')) {
         char regis = destiny[0];
         for (i = 0; i < strlen(data); i++) {
             addr[i] = data[i];
@@ -55,6 +55,45 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
             case 'D':
                 *D = cons;
                 break;
+        }
+    }
+
+    //* faz o MOV para um endereco de memoria
+    if (destiny[0] == '[') {
+        //* com um registrador como o dado a ser movido
+        if ((data[0] == 'A') || (data[0] == 'B') || (data[0] == 'C') || (data[0] == 'D')) {
+            for (i = 0; i < strlen(destiny) - 2; i++) {
+                addr[i] = destiny[i + 1];
+            }
+            int address = atoi(addr);
+            char regis = data[0];
+            switch (regis) {
+                case 'A':
+                    dataMemory[address] = *A;
+                    break;
+
+                case 'B':
+                    dataMemory[address] = *B;
+                    break;
+                case 'C':
+                    dataMemory[address] = *C;
+                    break;
+                case 'D':
+                    dataMemory[address] = *D;
+                    break;
+            }
+        }
+        //* com uma constante como o dado a ser movido
+        else {
+            for (i = 0; i < strlen(destiny) - 2; i++) {
+                addr[i] = destiny[i + 1];
+            }
+            int address = atoi(addr);
+            for (i = 0; i < strlen(data); i++) {
+                addr[i] = data[i];
+            }
+            int cons = atoi(addr);
+            dataMemory[address] = cons;
         }
     }
 }
@@ -119,17 +158,12 @@ int main() {
 
     printf("** Bem vindo ao Simulador Assembly em Linguagem C **\n");
     while (stop) {
-        print(A, B, C, D, dataMemory);
+        print(A, B, C, D, dataMemory);  //* chama a funcao print que exibe os valores dos registradores e da memoria de dados
 
         fgets(instruction, 20, stdin);  //* pegando a instrucao com o usuario
         //* separando a funcao da instrucao
         for (i = 0; i < 3; i++) {
             function[i] = toupper(instruction[i]);  //* salva a instrucao como palavra maiuscula para evitar erros de case sensitive
-        }
-
-        //* se a function for igual a HLT entao o codigo e encerrado
-        if (strncmp(function, "HLT", 3) == 0) {
-            stop = false;
         }
 
         posComma = getCommaPosition(instruction);  //* pegando a posicao da virgula
@@ -138,9 +172,11 @@ int main() {
         param2 = getParam2(instruction, posComma);
 
         if (strncmp(function, "MOV", 3) == 0) {
-            mov(param1, param2, dataMemory, &A, &B, &C, &D);
+            mov(param1, param2, dataMemory, &A, &B, &C, &D);  //* se a function for igual a MOV ele chama a funcao mov
         } else if (strncmp(function, "ADD", 3) == 0) {
             printf("add");
+        } else if (strncmp(function, "HLT", 3) == 0) {
+            stop = false;  //* se a function for igual a HLT entao o codigo e encerrado
         }
     }
 
