@@ -1,11 +1,11 @@
-(A) ADD register,register
-(B) ADD register,const
-(C) improve code semantic
-(D) organize main.c
-(E) add comments where needed
+(B) improve code semantic
+(C) organize main.c
+(D) add comments where needed
 
 x2020-09-16 HLT
 x2020-09-17 MOV register,const
 x2020-09-17 MOV register,memoryAddres
 x2020-09-17 MOV memoryAddres,const
 x2020-09-17 MOV memoryAddres,register
+x2020-09-17 ADD register,const
+x2020-09-17 ADD register,register
