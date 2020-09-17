@@ -6,13 +6,18 @@
 #include <strings.h>
 
 //* funcao mov
-int mov(char *destiny, char *data) {
+int movR(char *destiny, char *data, int *dataMemory) {
     int i;
-    printf("%i", destiny);
-    for (i = 0; i < 4; i++) {
-        if (atoi(destiny) == 65) {
-            printf("eh A");
+    char *addr;
+
+    if (data[0] == '[') {
+        for (i = 0; i < strlen(data) - 2; i++) {
+            addr[i] = data[i + 1];
         }
+        int address = atoi(addr);
+        return dataMemory[address];
+    } else {
+        return atoi(data);
     }
 }
 
@@ -84,7 +89,7 @@ int main() {
             function[i] = toupper(instruction[i]);
         }
 
-        //TODO: se a function for igual a HLT entao o codigo e encerrado
+        //* se a function for igual a HLT entao o codigo e encerrado
         if (strncmp(function, "HLT", 3) == 0) {
             stop = false;
         }
@@ -96,13 +101,13 @@ int main() {
 
         if (strncmp(function, "MOV", 3) == 0) {
             if (strncmp(param1, "A", 1) == 0) {
-                A = mov(param1, param2);
+                A = movR(param1, param2, dataMemory);
             } else if (strncmp(param1, "B", 1) == 0) {
-                B = mov(param1, param2);
+                B = movR(param1, param2, dataMemory);
             } else if (strncmp(param1, "C", 1) == 0) {
-                C = mov(param1, param2);
+                C = movR(param1, param2, dataMemory);
             } else if (strncmp(param1, "D", 1) == 0) {
-                D = mov(param1, param2);
+                D = movR(param1, param2, dataMemory);
             }
         } else if (strncmp(function, "ADD", 3) == 0) {
             printf("add");

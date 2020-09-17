@@ -1,0 +1,7 @@
+(A) MOV registrador,constante
+(B) MOV end.memória,constante
+(C) MOV registrador,end.memória
+(D) MOV end.memória,registrador
+(E) ADD registrador,registrador
+(F) ADD registrador,constante
+(G) HLT
