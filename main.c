@@ -5,19 +5,57 @@
 #include <string.h>
 #include <strings.h>
 
-//* funcao mov
-int movR(char *destiny, char *data, int *dataMemory) {
+//TODO: funcao mov
+void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int *D) {
     int i;
     char *addr;
+    int *cons;
 
+    //* faz o MOV de um endereco de memoria para um registrador
     if (data[0] == '[') {
+        char regis = destiny[0];
         for (i = 0; i < strlen(data) - 2; i++) {
             addr[i] = data[i + 1];
         }
         int address = atoi(addr);
-        return dataMemory[address];
-    } else {
-        return atoi(data);
+        switch (regis) {
+            case 'A':
+                *A = dataMemory[address];
+                break;
+
+            case 'B':
+                *B = dataMemory[address];
+                break;
+            case 'C':
+                *C = dataMemory[address];
+                break;
+            case 'D':
+                *D = dataMemory[address];
+                break;
+        }
+    }
+    //* faz o MOV de uma constante para um registrador
+    else {
+        char regis = destiny[0];
+        for (i = 0; i < strlen(data); i++) {
+            addr[i] = data[i];
+        }
+        int cons = atoi(addr);
+        switch (regis) {
+            case 'A':
+                *A = cons;
+                break;
+
+            case 'B':
+                *B = cons;
+                break;
+            case 'C':
+                *C = cons;
+                break;
+            case 'D':
+                *D = cons;
+                break;
+        }
     }
 }
 
@@ -51,7 +89,7 @@ char *getParam1(char *instruction, int posComma) {
 
     //* pegando o parametro 1
     for (i = 4; i < posComma; i++) {
-        param1[j] = instruction[i];
+        param1[j] = toupper(instruction[i]);  //* passando o parametro com letras maiusculas para evitar erros de case sensitive
         j++;
     }
     return param1;
@@ -62,7 +100,7 @@ char *getParam2(char *instruction, int posComma) {
 
     //* pegando o parametro 2
     for (i = posComma + 1; i < strlen(instruction); i++) {
-        param2[j] = instruction[i];
+        param2[j] = toupper(instruction[i]);
         j++;
     }
 
@@ -86,7 +124,7 @@ int main() {
         fgets(instruction, 20, stdin);  //* pegando a instrucao com o usuario
         //* separando a funcao da instrucao
         for (i = 0; i < 3; i++) {
-            function[i] = toupper(instruction[i]);
+            function[i] = toupper(instruction[i]);  //* salva a instrucao como palavra maiuscula para evitar erros de case sensitive
         }
 
         //* se a function for igual a HLT entao o codigo e encerrado
@@ -100,15 +138,7 @@ int main() {
         param2 = getParam2(instruction, posComma);
 
         if (strncmp(function, "MOV", 3) == 0) {
-            if (strncmp(param1, "A", 1) == 0) {
-                A = movR(param1, param2, dataMemory);
-            } else if (strncmp(param1, "B", 1) == 0) {
-                B = movR(param1, param2, dataMemory);
-            } else if (strncmp(param1, "C", 1) == 0) {
-                C = movR(param1, param2, dataMemory);
-            } else if (strncmp(param1, "D", 1) == 0) {
-                D = movR(param1, param2, dataMemory);
-            }
+            mov(param1, param2, dataMemory, &A, &B, &C, &D);
         } else if (strncmp(function, "ADD", 3) == 0) {
             printf("add");
         }
