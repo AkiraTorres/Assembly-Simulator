@@ -1,3 +1,4 @@
+// declaracao das bibliotecas utilizadas
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -5,8 +6,8 @@
 #include <string.h>
 #include <strings.h>
 
-//*
-int *fodase(int *A, int *B, int *C, int *D) {
+// pega os registradores e os salva em ponteiros
+int *getPointers(int *A, int *B, int *C, int *D) {
     int i;
     int *pointers = (int *)malloc(4 * sizeof(int));
     for (i = 0; i < 4; i++) {
@@ -23,13 +24,13 @@ int *fodase(int *A, int *B, int *C, int *D) {
     return pointers;
 }
 
-//* funcao assembly MOV
+// funcao assembly MOV
 void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int *D) {
     int i;
     char *addr;
     int *cons;
 
-    //* faz o MOV de um endereco de memoria para um registrador
+    // faz o MOV de um endereco de memoria para um registrador
     if (data[0] == '[') {
         char regis = destiny[0];
         for (i = 0; i < strlen(data) - 2; i++) {
@@ -40,7 +41,6 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
             case 'A':
                 *A = dataMemory[address];
                 break;
-
             case 'B':
                 *B = dataMemory[address];
                 break;
@@ -52,7 +52,7 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
                 break;
         }
     }
-    //* faz o MOV de uma constante para um registrador
+    // faz o MOV de uma constante para um registrador
     else if ((destiny[0] == 'A') || (destiny[0] == 'B') || (destiny[0] == 'C') || (destiny[0] == 'D')) {
         char regis = destiny[0];
         for (i = 0; i < strlen(data); i++) {
@@ -63,7 +63,6 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
             case 'A':
                 *A = cons;
                 break;
-
             case 'B':
                 *B = cons;
                 break;
@@ -76,20 +75,20 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
         }
     }
 
-    //* faz o MOV para um endereco de memoria
+    // faz o MOV para um endereco de memoria
     if (destiny[0] == '[') {
-        //* com um registrador como o dado a ser movido
+        // com um registrador como o dado a ser movido
         if ((data[0] == 'A') || (data[0] == 'B') || (data[0] == 'C') || (data[0] == 'D')) {
+            char regis = data[0];
             for (i = 0; i < strlen(destiny) - 2; i++) {
                 addr[i] = destiny[i + 1];
+                addr[i + 1] = '\0';
             }
             int address = atoi(addr);
-            char regis = data[0];
             switch (regis) {
                 case 'A':
                     dataMemory[address] = *A;
                     break;
-
                 case 'B':
                     dataMemory[address] = *B;
                     break;
@@ -101,38 +100,36 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
                     break;
             }
         }
-        //* com uma constante como o dado a ser movido
+        // com uma constante como o dado a ser movido
         else {
+            int cons = atoi(data);
             for (i = 0; i < strlen(destiny) - 2; i++) {
                 addr[i] = destiny[i + 1];
+                addr[i + 1] = '\0';
             }
             int address = atoi(addr);
-            for (i = 0; i < strlen(data); i++) {
-                addr[i] = data[i];
-            }
-            int cons = atoi(addr);
+            printf("%i %i\n", address, cons);
             dataMemory[address] = cons;
         }
     }
 }
 
-//* funcao assembly ADD
+// funcao assembly ADD
 void add(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int *D) {
     int i, j;
     char *addr;
     int *cons;
 
-    //* faz o ADD de um registrador para um registrador
+    // faz o ADD de um registrador para um registrador
     if (((data[0] == 'A') || (data[0] == 'B') || (data[0] == 'C') || (data[0] == 'D'))) {
         char regis = destiny[0];
-        int *pointers = fodase(A, B, C, D);
+        int *pointers = getPointers(A, B, C, D);
         int parcel;
         int count = 0;
         char k = 65;
 
         for (i = 65; i < 69; i++) {
             if (data[0] == i) {
-                printf("%i", count);
                 parcel = pointers[count];
             }
             count++;
@@ -155,7 +152,7 @@ void add(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
                 break;
         }
     }
-    //* faz o ADD de uma constante para um registrador
+    // faz o ADD de uma constante para um registrador
     else if ((destiny[0] == 'A') || (destiny[0] == 'B') || (destiny[0] == 'C') || (destiny[0] == 'D')) {
         char regis = destiny[0];
         for (i = 0; i < strlen(data); i++) {
@@ -166,7 +163,6 @@ void add(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
             case 'A':
                 *A += cons;
                 break;
-
             case 'B':
                 *B += cons;
                 break;
@@ -180,7 +176,7 @@ void add(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
     }
 }
 
-//* imprimir o estado dos Registradores e da Memoria de Dados
+// imprimir o estado dos Registradores e da Memoria de Dados
 void print(int A, int B, int C, int D, int *dataMemory) {
     int i;
     printf("Banco de registradores: A:%i B:%i C:%i D:%i\n", A, B, C, D);
@@ -192,7 +188,7 @@ void print(int A, int B, int C, int D, int *dataMemory) {
     printf("\n");
 }
 
-//* descubrindo a posicao da virgula
+// descubrindo a posicao da virgula
 int getCommaPosition(char *instruction) {
     int posComma = -1, i;
     for (i = 0; instruction[i] != '\0'; i++) {
@@ -203,14 +199,14 @@ int getCommaPosition(char *instruction) {
     return posComma;
 }
 
-//* saparando os parametros da instrucao
+// saparando os parametros da instrucao
 char *getParam1(char *instruction, int posComma) {
     int i, j = 0;
     char *param1 = (char *)malloc(sizeof(char) * 5);
 
-    //* pegando o parametro 1
+    // pegando o parametro 1
     for (i = 4; i < posComma; i++) {
-        param1[j] = toupper(instruction[i]);  //* passando o parametro com letras maiusculas para evitar erros de case sensitive
+        param1[j] = toupper(instruction[i]);  // passando o parametro com letras maiusculas para evitar erros de case sensitive
         j++;
     }
     return param1;
@@ -219,7 +215,7 @@ char *getParam2(char *instruction, int posComma) {
     int i, j = 0;
     char *param2 = (char *)malloc(sizeof(char) * 5);
 
-    //* pegando o parametro 2
+    // pegando o parametro 2
     for (i = posComma + 1; i < strlen(instruction); i++) {
         param2[j] = toupper(instruction[i]);
         j++;
@@ -229,7 +225,7 @@ char *getParam2(char *instruction, int posComma) {
 }
 
 int main() {
-    //* declarando variaveis e valores iniciais
+    // declarando variaveis e valores iniciais
     bool stop = true;
     int A = 0, B = 0, C = 0, D = 0, i = 0, j = 0, posComma = -1;
     int *dataMemory = (int *)malloc(sizeof(int) * 50);
@@ -238,27 +234,31 @@ int main() {
     char *param1 = (char *)malloc(sizeof(char) * 5);
     char *param2 = (char *)malloc(sizeof(char) * 5);
 
+    for (i = 0; i < 50; i++) {
+        dataMemory[i] = 0;
+    }
+
     printf("** Bem vindo ao Simulador Assembly em Linguagem C **\n");
     while (stop) {
-        print(A, B, C, D, dataMemory);  //* chama a funcao print que exibe os valores dos registradores e da memoria de dados
+        print(A, B, C, D, dataMemory);  // chama a funcao print que exibe os valores dos registradores e da memoria de dados
 
-        fgets(instruction, 20, stdin);  //* pegando a instrucao com o usuario
-        //* separando a funcao da instrucao
+        fgets(instruction, 20, stdin);  // pegando a instrucao com o usuario
+        // separando a funcao da instrucao
         for (i = 0; i < 3; i++) {
-            function[i] = toupper(instruction[i]);  //* salva a instrucao como palavra maiuscula para evitar erros de case sensitive
+            function[i] = toupper(instruction[i]);  // salva a instrucao como palavra maiuscula para evitar erros de case sensitive
         }
 
-        posComma = getCommaPosition(instruction);  //* pegando a posicao da virgula
-        //* pegando os parametros 1 e 2
+        posComma = getCommaPosition(instruction);  // pegando a posicao da virgula
+        // pegando os parametros 1 e 2
         param1 = getParam1(instruction, posComma);
         param2 = getParam2(instruction, posComma);
 
         if (strncmp(function, "MOV", 3) == 0) {
-            mov(param1, param2, dataMemory, &A, &B, &C, &D);  //* se a function for igual a MOV ele chama a funcao mov
+            mov(param1, param2, dataMemory, &A, &B, &C, &D);  // se a function for igual a MOV ele chama a funcao mov
         } else if (strncmp(function, "ADD", 3) == 0) {
-            add(param1, param2, dataMemory, &A, &B, &C, &D);  //* se a function for igual a ADD ele chama a funcao add
+            add(param1, param2, dataMemory, &A, &B, &C, &D);  // se a function for igual a ADD ele chama a funcao add
         } else if (strncmp(function, "HLT", 3) == 0) {
-            stop = false;  //* se a function for igual a HLT entao o codigo e encerrado
+            stop = false;  // se a function for igual a HLT entao o codigo e encerrado
         }
     }
 
