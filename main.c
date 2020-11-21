@@ -108,7 +108,6 @@ void mov(char *destiny, char *data, int *dataMemory, int *A, int *B, int *C, int
                 addr[i + 1] = '\0';
             }
             int address = atoi(addr);
-            printf("%i %i\n", address, cons);
             dataMemory[address] = cons;
         }
     }
