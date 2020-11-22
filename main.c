@@ -218,6 +218,7 @@ void print(int A, int B, int C, int D, int *dataMemory)
         printf(" %d", dataMemory[i]);
     }
     printf("\n");
+    printf("Instrucao: ");
 }
 
 // descubrindo a posicao da virgula
@@ -308,6 +309,7 @@ int main()
         {
             stop = false; // se a function for igual a HLT entao o codigo e encerrado
         }
+        printf("\n");
     }
 
     return 0;
